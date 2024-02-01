@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <button id="main">首页</button>
+  <button id="push">关于push</button>
+  <button id="replace">其它替换</button>
+  <script type="module">
+    import { createWebHashHistory, createRouter } from "./src/index"
+
+
+    function init() {
+      const main = document.getElementById('main') 
+      const push = document.getElementById('push') 
+      const replace = document.getElementById('replace')
+      main.addEventListener('click', () => {
+        router.push('/')
+        console.log(history)
+      })
+      push.addEventListener('click', () => {
+        router.push('/about')
+      })
+      replace.addEventListener('click', () => {
+        router.replace('/other')
+      })
+    }
+    init()
+    const Home = { template: '<div>Home</div>' }
+    const About = { template: '<div>About</div>' }
+    // 创建自己的路由系统，需要包含当前的路径，当前路径下的状态，需要提两个方法用来切换路由pushState replaceState
+    // 路由监听，如果路径变化需要通知用户
+    const history = createWebHashHistory()
+    history.listener((to, from , isBack) => {
+      console.log(to, from , isBack)
+    })
+   console.log(history)
+    const routes = [
+      { path: '/', component: Home },
+      { path: '/about', component: About },
+    ]
+    const router = createRouter({
+      history,
+      routes, 
+    })
+    console.log(router)
+    router.beforeEach((to, from, next) => {
+      next()
+    })
+  </script>
+</body>
+
+</html>

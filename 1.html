@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    class SimpleRouter {
+      constructor() {
+        this.beforeEachHooks = [];
+        this.currentRoute = null;
+      }
+
+      // 添加全局前置守卫
+      beforeEach(hook) {
+        this.beforeEachHooks.push(hook);
+      }
+
+      // 模拟路由切换
+      navigate(to) {
+        const from = this.currentRoute;
+        const next = () => {
+          console.log(`Navigating from ${from} to ${to}`);
+          this.currentRoute = to;
+        };
+
+        // 执行全局前置守卫
+        const runHooks = (index) => {
+       
+          if (index === this.beforeEachHooks.length) {
+            // 全部守卫执行完毕，可以导航
+            next();
+          } else {
+            // 执行下一个守卫
+            const hook = this.beforeEachHooks[index];
+            hook(to, from, () => runHooks(index + 1));
+          }
+        };
+
+        runHooks(0);
+      }
+    }
+
+    // 使用示例
+    const router = new SimpleRouter();
+
+    // 添加全局前置守卫
+    router.beforeEach((to, from, next) => {
+      console.log(1)
+      next(); // 继续导航
+    });
+
+    // 模拟路由切换
+    router.navigate('/dashboard');
+
+  </script>
+</body>
+
+</html>
